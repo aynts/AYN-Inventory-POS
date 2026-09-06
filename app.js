@@ -7,8 +7,6 @@ let cart = [];
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("current-date").textContent = new Date().toLocaleDateString('en-GB');
   loadInventory();
-  renderInventoryTable();
-  updatePosItemSelect();
 });
 
 // Toast Notification
@@ -52,13 +50,30 @@ function loadInventory() {
   const data = localStorage.getItem("ayn_inventory");
   if (data) {
     inventory = JSON.parse(data);
+    renderInventoryTable();
+    updatePosItemSelect();
   } else {
-    // Seed some initial data if empty
-    inventory = [
-      { id: Date.now().toString(), name: "Solar Panel 550W", desc: "Monocrystalline", price: 250000, stock: 50 },
-      { id: (Date.now() + 1).toString(), name: "Inverter 5kW", desc: "Hybrid Inverter", price: 1200000, stock: 10 }
-    ];
-    saveInventoryToStorage();
+    // Seed data from products.json if empty
+    fetch('products.json')
+      .then(response => response.json())
+      .then(products => {
+        inventory = products.map(p => ({
+          id: p.id.toString(),
+          name: p.name,
+          desc: p.category || "",
+          price: p.price,
+          stock: 100 // Default stock if none provided
+        }));
+        saveInventoryToStorage();
+        renderInventoryTable();
+        updatePosItemSelect();
+      })
+      .catch(err => {
+        console.error("Failed to load products.json", err);
+        inventory = [];
+        renderInventoryTable();
+        updatePosItemSelect();
+      });
   }
 }
 
