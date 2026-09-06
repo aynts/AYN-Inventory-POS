@@ -70,11 +70,21 @@ function saveInventoryItem() {
   const idInput = document.getElementById("inv-id").value;
   const name = document.getElementById("inv-name").value.trim();
   const desc = document.getElementById("inv-desc").value.trim();
-  const price = parseFloat(document.getElementById("inv-price").value) || 0;
-  const stock = parseInt(document.getElementById("inv-stock").value) || 0;
+  const price = parseFloat(document.getElementById("inv-price").value);
+  const stock = parseInt(document.getElementById("inv-stock").value);
 
   if (!name) {
     showToast("Item name is required!", "error");
+    return;
+  }
+  
+  if (isNaN(price) || price <= 0) {
+    showToast("A valid Price greater than 0 is required!", "error");
+    return;
+  }
+  
+  if (isNaN(stock) || stock < 0) {
+    showToast("A valid Stock quantity is required!", "error");
     return;
   }
 
