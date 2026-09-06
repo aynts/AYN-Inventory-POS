@@ -292,6 +292,13 @@ function renderCartTable() {
 }
 
 function checkout() {
+  const customerName = document.getElementById("pos-customer-name").value.trim();
+  
+  if (!customerName) {
+    showToast("Customer Name is required!", "error");
+    return;
+  }
+
   if (cart.length === 0) {
     showToast("Cart is empty!", "error");
     return;
@@ -307,8 +314,11 @@ function checkout() {
 
   saveInventoryToStorage();
   
-  // Clear cart
+  // Clear cart & customer
   cart = [];
+  document.getElementById("pos-customer-name").value = "";
+  document.getElementById("pos-customer-phone").value = "";
+  
   renderCartTable();
   updatePosItemSelect();
   
